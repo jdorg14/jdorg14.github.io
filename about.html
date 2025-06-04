@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Karma's NY Pizza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Open+Sans:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base Styles & CSS Variables (Simulating inclusion from main CSS) --- */
+        :root {
+            --primary-color: #B22222; /* Brick Red */
+            --secondary-color: #F5F5DC; /* Subway Tile White/Cream */
+            --accent-color: #FFC107; /* Taxi Yellow */
+            --dark-color: #222222; /* Steel Gray / Black */
+            --text-color: #333333;
+            --light-color: #FFFFFF;
+            
+            /* Your variable mapping based on the theme */
+            --red: var(--primary-color);
+            --brick: var(--primary-color); 
+            --cream: var(--secondary-color);
+            --yellow: var(--accent-color);
+            --black: var(--dark-color);
+            --gray: #555555; /* Common gray for text */
+
+            --font-heading: 'Oswald', 'Bebas Neue', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            --nav-height: 70px; 
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            overflow-x: hidden; 
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            color: var(--red);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: var(--yellow);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* Prevents bottom space under images */
+        }
+        ul { list-style: none; }
+
+        .section-title { /* Common style for section titles */
+            font-size: 2.2rem;
+            color: var(--red);
+            font-family: var(--font-heading);
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--yellow);
+            display: inline-block;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+
+        /* --- Loading Animation Styles (Consistent with Menu page) --- */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out; 
+        }
+        .loading-overlay.fade-out {
+            opacity: 0;
+        }
+        .pizza-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            animation: rotatePizza 2s linear infinite;
+        }
+        .pizza-slice {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86.6px solid var(--yellow); 
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 50% 100%; 
+        }
+        @keyframes rotatePizza {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: var(--light-color);
+            font-family: var(--font-heading);
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- Header Styles (Consistent with Menu page) --- */
+        header {
+            background-color: var(--black);
+            color: var(--light-color);
+            padding: 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: var(--nav-height);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        header.scrolled {
+            background-color: rgba(34, 34, 34, 0.9); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-family: var(--font-heading);
+            font-size: 1.5rem; 
+            font-weight: 700;
+            color: var(--light-color);
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px; 
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover img {
+            transform: rotate(-15deg);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        nav ul li {
+            margin-left: 25px;
+        }
+        nav ul li a {
+            color: var(--light-color);
+            font-weight: bold;
+            padding: 5px 0;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--yellow);
+            transition: width 0.3s ease;
+        }
+        nav ul li a:hover::after,
+        nav ul li a.active::after {
+            width: 100%;
+        }
+        nav ul li a:hover, 
+        nav ul li a.active {
+            color: var(--yellow);
+        }
+        .mobile-menu-btn {
+            display: none; 
+            background: none;
+            border: none;
+            color: var(--light-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* --- Footer Styles (Consistent with Menu page) --- */
+        footer {
+            background-color: var(--black);
+            color: #a0a0a0; 
+            padding: 50px 0 20px; 
+            font-size: 0.9rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-column h3 {
+            font-family: var(--font-heading);
+            color: var(--light-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .footer-column p, .footer-column ul li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+        .footer-column ul { padding-left: 0; }
+        .footer-column ul li a {
+            color: #a0a0a0;
+            transition: color 0.3s ease, padding-left 0.3s ease;
+        }
+        .footer-column ul li a:hover {
+            color: var(--yellow);
+            padding-left: 5px;
+        }
+        .footer-column i { 
+            margin-right: 8px;
+            color: var(--yellow);
+            width: 20px; 
+            text-align: center;
+        }
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .social-links a i {
+            font-size: 1.3rem;
+            color: var(--light-color);
+        }
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+        .social-links a:hover i {
+            color: var(--yellow);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444; 
+            font-size: 0.85rem;
+            color: #777;
+        }
+        .footer-bottom p { margin-bottom: 0; }
+
+        /* --- Animations --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Additional About Page Styles --- */
+        .page-transition { /* Applied to body */
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .about-hero {
+            height: 50vh; 
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: var(--nav-height); /* Space for fixed header */
+        }
+        
+        .about-hero h1 {
+            font-size: 3.5rem; 
+            color: var(--light-color);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            animation: fadeInUp 1s ease 0.3s forwards; /* Added delay and forwards */
+        }
+        
+        .history-section {
+            padding: 80px 0; /* Adjusted padding */
+            background-color: white;
+        }
+        
+        .history-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left; /* Better for readability of paragraphs */
+        }
+        
+        .history-content h2 {
+            font-size: 2.2rem; /* Adjusted */
+            margin-bottom: 25px; /* Adjusted */
+            color: var(--dark-color);
+            text-align: center; /* Center the heading */
+            font-family: var(--font-heading);
+        }
+        
+        .history-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1rem; /* Slightly increased for readability */
+            color: var(--text-color);
+        }
+        .history-content p:first-of-type {
+            font-size: 1.1rem; /* Make first paragraph slightly larger */
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        .history-content blockquote {
+            font-style: italic;
+            color: var(--red);
+            margin: 25px 0;
+            padding: 15px 20px;
+            border-left: 4px solid var(--yellow);
+            background-color: #f9f9f9;
+            font-size: 1.05rem;
+        }
+        
+        .team-section {
+            padding: 80px 0; /* Adjusted padding */
+            background-color: var(--cream);
+        }
+        /* .section-title is now a common class, styled above */
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax */
+            gap: 30px;
+            margin-top: 30px; /* Adjusted */
+        }
+        
+        .team-member {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Combined transitions */
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        
+        .team-member.in-view {
+            transform: translateY(0);
+            opacity: 1;
+            /* Stagger animation using JS if desired, or CSS nth-child delays */
+        }
+        
+        .team-member:hover {
+            transform: translateY(-8px); /* Adjusted hover effect */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15); /* Enhanced hover shadow */
+        }
+        
+        .team-img {
+            height: 300px;
+            overflow: hidden;
+        }
+        
+        .team-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .team-member:hover .team-img img {
+            transform: scale(1.08); /* Slightly reduced scale */
+        }
+        
+        .team-info {
+            padding: 25px; /* Increased padding */
+            text-align: center;
+        }
+        
+        .team-info h3 {
+            font-size: 1.4rem; /* Adjusted */
+            margin-bottom: 8px; /* Adjusted */
+            color: var(--dark-color);
+            font-family: var(--font-heading);
+        }
+        
+        .team-info p.title { /* Style for job title */
+            color: var(--red);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px; /* Adjusted */
+        }
+        .team-info p.description { /* Style for description text */
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        .values-section {
+            padding: 80px 0; /* Adjusted padding */
+            background-color: white;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted */
+            gap: 30px;
+        }
+        
+        .value-card {
+            text-align: center;
+            padding: 30px 25px; /* Adjusted padding */
+            background-color: var(--cream);
+            border-radius: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            transform: translateY(50px);
+            opacity: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .value-card.in-view {
+            transform: translateY(0);
+            opacity: 1;
+             /* Stagger animation using JS if desired, or CSS nth-child delays */
+        }
+        
+        .value-card:hover {
+            background-color: var(--red);
+            color: white;
+            transform: translateY(-8px); /* Adjusted */
+            box-shadow: 0 10px 20px rgba(var(--red), 0.3);
+        }
+        
+        .value-card:hover h3,
+        .value-card:hover .value-icon { /* Target icon color on hover as well */
+            color: white;
+        }
+        
+        .value-icon {
+            font-size: 2.8rem; /* Adjusted */
+            margin-bottom: 20px;
+            color: var(--red);
+            transition: color 0.3s ease; /* Smooth color transition for icon */
+        }
+                
+        .value-card h3 {
+            font-size: 1.4rem; /* Adjusted */
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            font-family: var(--font-heading);
+            transition: color 0.3s ease; /* Smooth color transition for heading */
+        }
+        .value-card p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* --- Responsive Adjustments (Consistent with Menu Page) --- */
+        @media (max-width: 768px) {
+            body { margin-top: 0; }
+            header { height: auto; padding: 10px 0; }
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 15px; 
+            }
+            .logo { font-size: 1.3rem; margin-bottom: 10px; }
+            .logo img { height: 35px; }
+            nav { width: 100%; }
+            nav ul {
+                display: none; 
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--dark-color); 
+                padding: 10px 0;
+            }
+            nav ul.active { 
+                display: flex;
+            }
+            nav ul li {
+                margin: 10px 0;
+                text-align: center;
+                width: 100%;
+            }
+            nav ul li a {
+                display: block; 
+                padding: 10px;
+            }
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px; 
+                right: 20px; 
+            }
+            .about-hero { margin-top: 0; height: 40vh; } 
+            .about-hero h1 { font-size: 2.5rem; }
+            .section-title, .history-content h2 { font-size: 1.8rem; }
+
+            .history-content { padding: 0 15px; } /* Add padding for text content */
+            .team-grid, .values-grid {
+                grid-template-columns: 1fr; /* Single column */
+            }
+             .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .footer-column ul { text-align: center; }
+            .social-links { margin-bottom: 20px; }
+        }
+
+    </style>
+</head>
+<body class="page-transition">
+    <div class="loading-overlay">
+        <div class="pizza-loader">
+            <div class="pizza-slice"></div>
+        </div>
+        <div class="loading-text">Karma's NY Pizza</div>
+    </div>
+
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                 <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222222' /><circle cx='50' cy='50' r='35' fill='%23B22222'/><path d='M35,40 Q50,20 65,40 L50,70 Z' fill='%23F5F5DC'/><circle cx='45' cy='50' r='4' fill='%23B22222'/><circle cx='55' cy='50' r='4' fill='%23B22222'/><text x='50' y='90' font-family='Arial, sans-serif' font-size='10' fill='white' text-anchor='middle'>KNYP</text></svg>" alt="Karma's NY Pizza Logo">
+                Karma's NY Pizza
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html">Menu</a></li>
+                    <li><a href="about.html" class="active">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="about-hero">
+        <h1>Our Slice of Heaven</h1>
+    </section>
+
+    <section class="history-section">
+        <div class="container">
+            <div class="history-content">
+                <h2>From New York's Heart to Bhutan's Soul</h2>
+                <p>Karma Jigme's (that's me, Jay!) love affair with pizza ignited on the vibrant, fast-paced streets of New York City. For over a decade, I immersed myself in the hallowed halls of some of Brooklyn's most iconic pizzerias. There, I didn't just learn to make pizza; I learned its soul – the art of the perfect thin crust, the alchemy of sauce and cheese, and the sacred New York fold.</p>
+                <blockquote>"It was my dream to open a NY pizzeria in Bhutan because where else is the best pizza in the world other than New York? I wanted to share this incredible food with my fellow Bhutanese, crafted with the same passion and traditional methods I cherished in Brooklyn." - Karma "Jay" Jigme</blockquote>
+                <p>After years honing my craft and with a heart full of dreams, I returned to the serene landscapes of Bhutan. In 2020, amidst global uncertainties but with unwavering resolve, Karma's NY Pizza was born in Phuentsholing, a beacon of authentic New York flavor in the Himalayas.</p>
+                <p>Today, Karma's NY Pizza isn't just a restaurant; it's a culmination of a journey, a bridge between two worlds. It's where locals and travelers alike gather to experience genuine New York-style pizza, served with the warmth and hospitality that defines Bhutan.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="team-section">
+        <div class="container">
+            <h2 class="section-title">Meet The Dough-Pros</h2>
+            <div class="team-grid">
+                <div class="team-member"> <div class="team-img">
+                        <img src="https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Karma Jigme - Owner">
+                    </div>
+                    <div class="team-info">
+                        <h3>Karma "Jay" Jigme</h3>
+                        <p class="title">Owner & Head Pizza Maestro</p>
+                        <p class="description">With 10+ years slinging dough in NYC, Jay is the heart and soul behind every authentic slice.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-img">
+                        <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Dawa Tshering - Sous Chef">
+                    </div>
+                    <div class="team-info">
+                        <h3>Dawa T.</h3>
+                        <p class="title">Sous Chef & Crust Connoisseur</p>
+                        <p class="description">Jay's right-hand man, Dawa ensures every pizza meets our sky-high NY standards.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-img">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Pema Yangchen - Manager">
+                    </div>
+                    <div class="team-info">
+                        <h3>Pema Y.</h3>
+                        <p class="title">Front of House & Vibe Curator</p>
+                        <p class="description">Pema brings the signature Bhutanese warmth, making everyone feel like family.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="values-section">
+        <div class="container">
+            <h2 class="section-title">Our Core Toppings (Values)</h2>
+            <div class="values-grid">
+                <div class="value-card"> <div class="value-icon">
+                        <i class="fas fa-pepper-hot"></i> </div>
+                    <h3>Finest Ingredients</h3>
+                    <p>We meticulously source premium flour and tomatoes, complemented by the freshest local produce for unparalleled taste.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-hand-paper"></i> </div>
+                    <h3>NY Authenticity</h3>
+                    <p>Hand-tossed dough, stone-deck ovens, high heat – it's the classic New York ritual in every pizza we bake.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i> </div>
+                    <h3>Community Spirit</h3>
+                    <p>Proudly Bhutanese, we're committed to uplifting our local community by supporting local farmers and businesses.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Karma's NY Pizza</h3>
+                    <p>Bringing authentic New York style pizza to the heart of Bhutan. Every slice a story.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Main Street, Phuentsholing, Bhutan</li>
+                        <li><i class="fas fa-phone-alt"></i> +975 17 123 456</li>
+                        <li><i class="fas fa-envelope"></i> info@karmasnypizza.bt</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Opening Hours</h3>
+                    <ul>
+                        <li>Mon - Fri: 11:00 AM - 10:00 PM</li>
+                        <li>Sat - Sun: 12:00 PM - 11:00 PM</li>
+                         <li><a href="contact.html#delivery" style="font-weight:bold; color:var(--yellow);">Delivery Available!</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                 <p>&copy; <span id="currentYear"></span> Karma's NY Pizza. All Rights Reserved. Designed with <i class="fas fa-heart" style="color: var(--red);"></i> in Bhutan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Set Current Year in Footer ---
+        const currentYearSpan = document.getElementById('currentYear');
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
+        }
+
+        // --- Loading Animation ---
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                 const loadingOverlay = document.querySelector('.loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('fade-out');
+                    setTimeout(function() {
+                        loadingOverlay.style.display = 'none';
+                    }, 500); // Match CSS transition duration
+                }
+            }, 1500); // Simulate loading time
+        });
+
+        // --- Mobile Menu Toggle ---
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navUl = document.querySelector('nav ul');
+        
+        if (mobileMenuBtn && navUl) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navUl.classList.toggle('active');
+                this.innerHTML = navUl.classList.contains('active') ? 
+                                 '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+        }
+
+        // --- Header Scroll Effect ---
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if(header){
+                if (window.scrollY > 50) { // Reduced scroll distance for effect
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // --- Scroll Animation for Team Members and Value Cards ---
+        const scrollElements = document.querySelectorAll('.team-member, .value-card');
+        
+        const elementInView = (el, threshold = 0.15) => { // threshold as percentage from bottom
+            const elementTop = el.getBoundingClientRect().top;
+            const elementBottom = el.getBoundingClientRect().bottom;
+            const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+            
+            // Check if top of element is above bottom of viewport (minus threshold)
+            // And if bottom of element is below top of viewport (plus threshold, to avoid premature trigger for tall elements)
+            return elementTop <= viewportHeight * (1 - threshold) && elementBottom >= viewportHeight * threshold * 0.1;
+        };
+        
+        const displayScrollElement = (element) => {
+            element.classList.add('in-view');
+        };
+        
+        let animationFrameRequested = false;
+        const handleScrollAnimation = () => {
+            if (!animationFrameRequested) {
+                requestAnimationFrame(() => {
+                    scrollElements.forEach((el) => {
+                        if (!el.classList.contains('in-view') && elementInView(el)) { 
+                            displayScrollElement(el);
+                        }
+                    });
+                    animationFrameRequested = false;
+                });
+                animationFrameRequested = true;
+            }
+        };
+        
+        // Initial check on page load
+        document.addEventListener('DOMContentLoaded', () => {
+             // Small delay to ensure layout is stable for initial check
+            setTimeout(handleScrollAnimation, 100);
+        });
+        window.addEventListener('scroll', handleScrollAnimation);
+        window.addEventListener('resize', handleScrollAnimation); // Re-check on resize
+
+
+    </script>
+</body>
+</html>

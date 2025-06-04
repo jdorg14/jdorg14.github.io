@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Jay's NY Pizza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Open+Sans:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base Styles & CSS Variables (Simulating inclusion from main CSS) --- */
+        :root {
+            --primary-color: #B22222; /* Brick Red - Let's map this to --red */
+            --secondary-color: #F5F5DC; /* Subway Tile White/Cream - Let's map this to --cream */
+            --accent-color: #FFC107; /* Taxi Yellow - Let's map this to --yellow */
+            --dark-color: #222222; /* Steel Gray / Black - Let's map this to --black */
+            --text-color: #333333; /* Main text color */
+            --light-color: #FFFFFF;
+            --gray: #555555; /* Defining --gray for your new styles */
+
+            /* Your variable mapping */
+            --red: var(--primary-color);
+            --cream: var(--secondary-color);
+            --yellow: var(--accent-color);
+            --black: var(--dark-color);
+
+
+            --font-heading: 'Oswald', 'Bebas Neue', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            --nav-height: 70px; /* Adjusted as per your contact-hero margin-top */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color); /* Default background */
+            margin-top: var(--nav-height); /* To prevent content from hiding behind fixed nav */
+        }
+
+        .container { /* A general container for content */
+            max-width: 1100px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--red);
+            text-decoration: none;
+        }
+        a:hover {
+            color: var(--yellow);
+        }
+
+        /* --- Navigation Bar (Basic Structure - from original design) --- */
+        header {
+            background-color: var(--black);
+            color: var(--light-color);
+            padding: 0 1rem;
+            position: fixed; /* Fixed navigation */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: var(--nav-height);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100%;
+        }
+        nav .logo a {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--light-color);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        nav ul li {
+            margin-left: 25px;
+        }
+        nav ul li a {
+            color: var(--light-color);
+            font-weight: bold;
+            padding: 5px 0;
+            position: relative;
+        }
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--yellow);
+        }
+
+        /* --- Footer (Basic Structure - from original design) --- */
+        footer {
+            background-color: var(--black);
+            color: var(--cream);
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px; /* Give some space before footer */
+        }
+        footer p { margin-bottom: 0; font-size: 0.9rem; }
+        .social-links a { margin: 0 10px; }
+        .social-links i { font-size: 1.5rem; color: var(--cream); transition: color 0.3s ease; }
+        .social-links a:hover i { color: var(--yellow); }
+
+
+        /* --- Your New Contact Page Styles --- */
+        .contact-hero {
+            height: 50vh; /* Adjusted from 60vh to better fit content above */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            /* margin-top: 80px; This is handled by body margin-top for fixed nav */
+        }
+        
+        .contact-hero h1 {
+            font-size: 3.5rem; /* Slightly adjusted for responsiveness */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 1s ease forwards; /* Ensure it stays at final state */
+            color: white; /* Explicitly set color */
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .contact-section {
+            padding: 60px 0; /* Adjusted padding */
+            background-color: white;
+        }
+        
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px; /* Adjusted gap */
+            max-width: 1100px; /* Ensure container width is respected */
+            margin: 0 auto; /* Center the container */
+            padding: 0 20px; /* Padding for smaller screens */
+        }
+        
+        .contact-info {
+            /* For JS-driven animation, start with these if not immediately in view */
+            /* transform: translateX(-50px); */
+            /* opacity: 0; */
+            transition: all 1s ease;
+            /* For demo, making it visible by default */
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .contact-info.in-view { /* Class to be added by JavaScript on scroll */
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .contact-info h2 {
+            font-size: 1.8rem; /* Adjusted size */
+            margin-bottom: 25px; /* Adjusted margin */
+            color: var(--gray);
+            font-family: var(--font-heading);
+        }
+        
+        .contact-details {
+            margin-bottom: 30px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .contact-icon { /* Font Awesome icons will be styled by their own classes */
+            width: 40px;
+            height: 40px;
+            background-color: var(--red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            font-size: 1.2rem; /* Size for the icon itself */
+        }
+        
+        .contact-item:hover .contact-icon {
+            background-color: var(--yellow);
+            color: var(--black);
+            transform: rotate(15deg) scale(1.1); /* Added scale for more pop */
+        }
+        
+        .contact-text h3 {
+            font-size: 1.1rem; /* Adjusted size */
+            margin-bottom: 5px;
+            color: var(--gray);
+            font-family: var(--font-heading);
+        }
+        
+        .contact-text p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .contact-text p a { /* Style links within contact text */
+            color: var(--red);
+            font-weight: 600;
+        }
+        .contact-text p a:hover {
+            text-decoration: underline;
+            color: var(--yellow);
+        }
+        
+        .opening-hours h3 {
+            font-size: 1.1rem; /* Adjusted size */
+            margin-bottom: 15px;
+            color: var(--gray);
+            font-family: var(--font-heading);
+        }
+        
+        .opening-hours ul {
+            list-style: none;
+            padding-left: 0; /* Remove default padding */
+        }
+        
+        .opening-hours ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 8px; /* Adjusted padding */
+            font-size: 0.9rem;
+        }
+        
+        .opening-hours ul li span:first-child {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .opening-hours ul li span:last-child {
+            color: #666;
+        }
+        
+        .contact-form-wrapper { /* Added wrapper for better control of form animation */
+            /* For JS-driven animation, start with these if not immediately in view */
+            /* transform: translateX(50px); */
+            /* opacity: 0; */
+            transition: all 1s ease 0.3s; /* 0.3s delay */
+             /* For demo, making it visible by default */
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .contact-form-wrapper.in-view { /* Class to be added by JavaScript on scroll */
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .contact-form { /* Actual form styling */
+            background-color: var(--cream);
+            padding: 30px; /* Adjusted padding */
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .contact-form h2 {
+            font-size: 1.8rem; /* Adjusted size */
+            margin-bottom: 25px; /* Adjusted margin */
+            color: var(--gray);
+            font-family: var(--font-heading);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc; /* Lighter border */
+            border-radius: 5px;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+            background-color: var(--light-color); /* Ensure input background is light */
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--red);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(178, 34, 34, 0.2); /* Red focus, using the variable */
+        }
+        
+        .form-group textarea {
+            height: 120px; /* Adjusted height */
+            resize: vertical;
+        }
+
+        .submit-button {
+            display: inline-block;
+            background-color: var(--red);
+            color: white;
+            padding: 12px 30px;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .submit-button:hover {
+            background-color: var(--yellow);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .contact-hero h1 {
+                font-size: 2.5rem;
+            }
+            .contact-container {
+                grid-template-columns: 1fr; /* Stack on smaller screens */
+            }
+            .contact-info, .contact-form-wrapper { /* Reset transforms for stacked layout if animated */
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">Jay's NY Pizza</a>
+                </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="menu.html">Menu</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="contact-hero">
+        <h1>Get in Touch</h1>
+    </section>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info"> <h2>Contact Information</h2>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="contact-text">
+                            <h3>Visit Our Pizzeria</h3>
+                            <p>Main Street, Thimphu Town<br>Chukha, Bhutan</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                        <div class="contact-text">
+                            <h3>Call Us</h3>
+                            <p><a href="tel:+97517123456">+975 17 123 456</a> (Jay)</p>
+                            <p><a href="tel:+97577123456">+975 77 123 456</a> (Hotline)</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-text">
+                            <h3>Email Us</h3>
+                            <p><a href="mailto:jay@jaysnypizza.bt">jay@jaysnypizza.bt</a></p>
+                            <p><a href="mailto:orders@jaysnypizza.bt">orders@jaysnypizza.bt</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="opening-hours">
+                    <h3><i class="fas fa-clock" style="margin-right: 8px; color: var(--red);"></i>Opening Hours</h3>
+                    <ul>
+                        <li><span>Monday - Friday</span> <span>11:00 AM - 10:00 PM</span></li>
+                        <li><span>Saturday</span> <span>10:00 AM - 11:00 PM</span></li>
+                        <li><span>Sunday</span> <span>12:00 PM - 09:00 PM</span></li>
+                    </ul>
+                </div>
+            </div>
+
+             <div class="contact-form-wrapper"> <form action="#" method="POST" class="contact-form">
+                    <h2>Send Us a Message</h2>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Have a question, a suggestion, or a special request? Drop us a line!</p>
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="e.g., Karma Jigme" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number (Optional)</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+975 17XXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject">
+                            <option value="general_inquiry">General Inquiry</option>
+                            <option value="order_issue">Order Issue</option>
+                            <option value="feedback">Feedback/Suggestion</option>
+                            <option value="catering">Catering Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-button">Send Message <i class="fas fa-paper-plane" style="margin-left: 8px;"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="map-section" style="padding: 50px 0; background-color: var(--cream);">
+        <div class="container">
+            <h2 style="text-align: center; font-family: var(--font-heading); color: var(--red); margin-bottom: 30px; font-size: 2rem;">Find Us on the Map</h2>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3541.331021364967!2d89.38405601500000!3d27.42700000000000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e0a5fc6a05a623%3A0x7581e588567265df!2sPhuentsholing!5e0!3m2!1sen!2sbt!4v1678886400000!5m2!1sen!2sbt"
+                width="100%"
+                height="450"
+                style="border:0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Pizzeria Location Map">
+            </iframe>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© <span id="currentYear">2025</span> Jay's NY Pizza. All Rights Reserved. Crafted with <i class="fas fa-heart" style="color: var(--red);"></i> in Bhutan.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Basic JS for current year, if not using external script.js
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // For the scroll animations on .contact-info and .contact-form-wrapper:
+        // You would use the IntersectionObserver code from your main script.js.
+        // For example, if your JS adds 'is-visible' class:
+        // 1. Add 'animate-on-scroll' class to .contact-info and .contact-form-wrapper
+        // 2. In your CSS, change .in-view to .is-visible for consistency, or update JS.
+        // Example of how you might adapt the provided CSS:
+        // .contact-info.is-visible { transform: translateX(0); opacity: 1; }
+        // .contact-form-wrapper.is-visible { transform: translateX(0); opacity: 1; }
+        // And the initial state in CSS would be:
+        // .contact-info, .contact-form-wrapper { opacity: 0; transition: all 1s ease; }
+        // .contact-info { transform: translateX(-50px); }
+        // .contact-form-wrapper { transform: translateX(50px); transition-delay: 0.3s; }
+        //
+        // Since this is a self-contained debug, I've made them visible by default.
+        // If you link your script.js, ensure the target classes match.
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Karma's NY Pizza</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Open+Sans:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base Styles & CSS Variables (Simulating inclusion from main CSS) --- */
+        :root {
+            --primary-color: #B22222; /* Brick Red */
+            --secondary-color: #F5F5DC; /* Subway Tile White/Cream */
+            --accent-color: #FFC107; /* Taxi Yellow */
+            --dark-color: #222222; /* Steel Gray / Black */
+            --text-color: #333333;
+            --light-color: #FFFFFF;
+            
+            /* Your variable mapping based on the theme */
+            --red: var(--primary-color);
+            --brick: var(--primary-color); /* For .close-modal:hover */
+            --cream: var(--secondary-color);
+            --yellow: var(--accent-color);
+            --black: var(--dark-color);
+            --gray: #555555; /* Common gray for text */
+
+            --font-heading: 'Oswald', 'Bebas Neue', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            --nav-height: 70px; /* As per your menu-hero margin-top */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-color);
+            /* margin-top: var(--nav-height); Fixed nav will occupy space */
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            color: var(--red);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: var(--yellow);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        ul { list-style: none; }
+
+        .btn { /* Basic button style for modal "Order Now" */
+            display: inline-block;
+            background-color: var(--red);
+            color: white;
+            padding: 10px 20px;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: var(--yellow);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+
+        /* --- Loading Animation Styles (Your new loader) --- */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--black);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out; /* For fade-out JS */
+        }
+        .loading-overlay.fade-out {
+            opacity: 0;
+        }
+        .pizza-loader {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            animation: rotatePizza 2s linear infinite;
+        }
+        .pizza-slice {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86.6px solid var(--yellow); /* tan(60) * 50 for equilateral triangle slice */
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 50% 100%; /* Rotate around bottom center */
+        }
+        /* Optional: add more slices for a fuller look, or a simple spinning image */
+        @keyframes rotatePizza {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: var(--light-color);
+            font-family: var(--font-heading);
+            margin-top: 20px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+
+        /* --- Header Styles (Your new header) --- */
+        header {
+            background-color: var(--black);
+            color: var(--light-color);
+            padding: 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: var(--nav-height);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        header.scrolled {
+            background-color: rgba(34, 34, 34, 0.9); /* Darker, slightly transparent */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-family: var(--font-heading);
+            font-size: 1.5rem; /* Adjusted size */
+            font-weight: 700;
+            color: var(--light-color);
+            text-decoration: none;
+        }
+        .logo img {
+            height: 40px; /* Adjust as needed */
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover img {
+            transform: rotate(-15deg);
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        nav ul li {
+            margin-left: 25px;
+        }
+        nav ul li a {
+            color: var(--light-color);
+            font-weight: bold;
+            padding: 5px 0;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--yellow);
+            transition: width 0.3s ease;
+        }
+        nav ul li a:hover::after,
+        nav ul li a.active::after {
+            width: 100%;
+        }
+        nav ul li a:hover, 
+        nav ul li a.active {
+            color: var(--yellow);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default, shown in media query */
+            background: none;
+            border: none;
+            color: var(--light-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+
+        /* --- Keyframes for fadeInUp (used in hero) --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Your Additional Menu Page Styles --- */
+        .menu-hero {
+            height: 50vh; /* Adjusted from 60vh to better fit content if nav is fixed */
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1565299507177-b0ac66763828?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: var(--nav-height); /* Space for fixed header */
+        }
+        
+        .menu-hero h1 {
+            font-size: 3.5rem; /* Adjusted */
+            color: var(--light-color); /* Ensure hero title is white */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Enhanced shadow */
+            animation: fadeInUp 1s ease forwards;
+        }
+        
+        .menu-section {
+            padding: 60px 0; /* Adjusted */
+            background-color: var(--light-color); /* Ensuring background */
+        }
+        
+        .menu-category {
+            margin-bottom: 60px; /* Adjusted */
+        }
+        
+        .menu-category h2 {
+            font-size: 2.2rem; /* Adjusted */
+            color: var(--red); /* Match primary theme color for headers */
+            font-family: var(--font-heading);
+            text-align: center;
+            margin-bottom: 40px; /* Increased margin */
+            padding-bottom: 15px; /* Increased padding */
+            border-bottom: 3px solid var(--yellow); /* Use accent for border */
+            display: inline-block; /* For border to not span full width */
+            position: relative; /* For centering if needed */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .category-note { /* Styling for the "Available from..." text */
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: -30px; /* Pull it up a bit under the h2 */
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .menu-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adjusted minmax */
+            gap: 35px; /* Adjusted gap */
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center; /* Vertically align items in flex */
+            justify-content: space-between;
+            padding: 20px 15px; /* Adjusted padding */
+            border-bottom: 1px dashed #ccc; /* Lighter dash */
+            background-color: var(--light-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transform: translateX(-20px);
+            opacity: 0;
+            transition: all 0.5s ease, box-shadow 0.3s ease, border-bottom-color 0.3s ease;
+        }
+        
+        .menu-item.in-view {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .menu-item:hover {
+            border-bottom-color: var(--red);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px) translateX(0); /* Keep X transform for in-view */
+        }
+        
+        .item-name {
+            flex: 3; /* More space for name/desc */
+            padding-right: 15px; /* Space between name and price */
+        }
+        
+        .item-name h3 {
+            font-size: 1.15rem; /* Adjusted */
+            color: var(--dark-color); /* Darker for better readability */
+            font-family: var(--font-heading);
+            margin-bottom: 5px;
+            cursor: pointer; /* Indicate clickable for modal */
+            transition: color 0.3s ease;
+        }
+        .item-name h3:hover {
+            color: var(--red);
+        }
+        
+        .item-name p {
+            font-size: 0.85rem; /* Adjusted */
+            color: #666;
+            line-height: 1.4; /* Adjusted */
+        }
+        
+        .item-price {
+            flex: 1;
+            text-align: right;
+            font-weight: bold;
+            color: var(--red);
+            font-size: 1.1rem; /* Adjusted */
+            font-family: var(--font-heading);
+        }
+        
+        .special-tag {
+            display: inline-block;
+            background-color: var(--yellow);
+            color: var(--black);
+            font-size: 0.65rem; /* Adjusted */
+            padding: 4px 10px; /* Adjusted */
+            border-radius: 12px; /* More rounded */
+            margin-left: 8px; /* Adjusted */
+            font-weight: bold;
+            text-transform: uppercase;
+            vertical-align: middle; /* Align with text */
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0s 0.3s linear; /* Delay visibility hide */
+            padding: 20px; /* Padding for smaller screens */
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease, visibility 0s 0s linear;
+        }
+        
+        .modal-content {
+            background-color: white;
+            width: 100%; /* Full width on small screens */
+            max-width: 700px; /* Adjusted max-width */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transform: scale(0.9) translateY(-30px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            position: relative; /* For close button positioning */
+            display: flex; /* For image and text side-by-side */
+            flex-direction: column; /* Stack on small screens */
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-img {
+            flex: 1; /* Take up available space */
+            min-height: 250px; /* Minimum height */
+            max-height: 300px;
+            overflow: hidden;
+        }
+        
+        .modal-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-text {
+            flex: 1.2; /* Slightly more space for text */
+            padding: 25px; /* Adjusted */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-text h2 { /* Targets .modal-title in your JS */
+            font-size: 1.8rem; /* Adjusted */
+            color: var(--dark-color);
+            font-family: var(--font-heading);
+            margin-bottom: 8px; /* Adjusted */
+        }
+        
+        .modal-text .price { /* Targets .price in your JS */
+            font-size: 1.4rem; /* Adjusted */
+            color: var(--red);
+            font-weight: bold;
+            font-family: var(--font-heading);
+            margin-bottom: 15px; /* Adjusted */
+        }
+        
+        .modal-text p { /* Targets .modal-description in your JS */
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+            line-height: 1.7; /* Adjusted */
+            flex-grow: 1; /* Allow description to take space */
+        }
+        .modal-text .btn {
+            align-self: flex-start; /* Align button to left */
+            margin-top: auto; /* Push to bottom if space allows */
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 35px; /* Adjusted */
+            height: 35px; /* Adjusted */
+            background-color: var(--red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1.1rem; /* Adjusted */
+            transition: all 0.3s ease;
+            z-index: 10; /* Ensure it's above modal content */
+        }
+        
+        .close-modal:hover {
+            background-color: var(--brick); /* Ensure --brick is defined */
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* --- Footer Styles (Your new footer) --- */
+        footer {
+            background-color: var(--black);
+            color: #a0a0a0; /* Lighter gray for footer text */
+            padding: 50px 0 20px; /* More padding top, less bottom */
+            font-size: 0.9rem;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .footer-column h3 {
+            font-family: var(--font-heading);
+            color: var(--light-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .footer-column p, .footer-column ul li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+        .footer-column ul { padding-left: 0; }
+        .footer-column ul li a {
+            color: #a0a0a0;
+            transition: color 0.3s ease, padding-left 0.3s ease;
+        }
+        .footer-column ul li a:hover {
+            color: var(--yellow);
+            padding-left: 5px;
+        }
+        .footer-column i { /* Icons in contact info/social links */
+            margin-right: 8px;
+            color: var(--yellow);
+            width: 20px; /* Align icons */
+            text-align: center;
+        }
+        .social-links a {
+            display: inline-block;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+        .social-links a i {
+            font-size: 1.3rem;
+            color: var(--light-color);
+        }
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+        .social-links a:hover i {
+            color: var(--yellow);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444; /* Subtle separator */
+            font-size: 0.85rem;
+            color: #777;
+        }
+        .footer-bottom p { margin-bottom: 0; }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 992px) {
+            .menu-items {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { margin-top: 0; /* Nav is not fixed or handled differently */ }
+            header { height: auto; padding: 10px 0; }
+            .header-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 15px; /* Padding for header content */
+            }
+            .logo { font-size: 1.3rem; margin-bottom: 10px; }
+            .logo img { height: 35px; }
+            nav { width: 100%; }
+            nav ul {
+                display: none; /* Hidden by default */
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--dark-color); /* Background for dropdown */
+                padding: 10px 0;
+            }
+            nav ul.active { /* Shown by JS */
+                display: flex;
+            }
+            nav ul li {
+                margin: 10px 0;
+                text-align: center;
+                width: 100%;
+            }
+            nav ul li a {
+                display: block; /* Make links full width */
+                padding: 10px;
+            }
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 15px; /* Adjust as needed */
+                right: 20px; /* Adjust as needed */
+            }
+            .menu-hero { margin-top: 0; height: 40vh; } /* Adjust hero when nav changes */
+            .menu-hero h1 { font-size: 2.5rem; }
+            .menu-category h2 { font-size: 1.8rem; }
+            .menu-items {
+                grid-template-columns: 1fr; /* Single column */
+            }
+            .modal-content {
+                flex-direction: column; /* Stack image and text */
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            .modal-img { max-height: 200px; } /* Smaller image on mobile */
+            .footer-content {
+                grid-template-columns: 1fr; /* Stack footer columns */
+                text-align: center;
+            }
+            .footer-column ul { text-align: center; }
+            .social-links { margin-bottom: 20px; }
+        }
+
+         @media (min-width: 769px) { /* For modal image and text side-by-side */
+            .modal-content {
+                flex-direction: row;
+            }
+         }
+
+
+    </style>
+</head>
+<body>
+    <div class="loading-overlay">
+        <div class="pizza-loader">
+            <div class="pizza-slice"></div>
+            </div>
+        <div class="loading-text">Karma's NY Pizza</div>
+    </div>
+
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23222222' /><circle cx='50' cy='50' r='35' fill='%23B22222'/><path d='M35,40 Q50,20 65,40 L50,70 Z' fill='%23F5F5DC'/><circle cx='45' cy='50' r='4' fill='%23B22222'/><circle cx='55' cy='50' r='4' fill='%23B22222'/><text x='50' y='90' font-family='Arial, sans-serif' font-size='10' fill='white' text-anchor='middle'>KNYP</text></svg>" alt="Karma's NY Pizza Logo">
+                Karma's NY Pizza
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="menu.html" class="active">Menu</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <section class="menu-hero">
+        <h1>Taste The Legend</h1>
+    </section>
+
+    <section class="menu-section">
+        <div class="container">
+            <div class="menu-category" id="whole-pies">
+                <h2>NY Classic Whole Pies (18")</h2>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>The Manhattan <span class="special-tag">Popular</span></h3>
+                            <p>Classic NY style with tomato sauce, mozzarella, and premium pepperoni.</p>
+                        </div>
+                        <div class="item-price">Nu. 850</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>The Brooklyn Special</h3>
+                            <p>Tomato sauce, mozzarella, Italian sausage, fresh mushrooms, and caramelized onions.</p>
+                        </div>
+                        <div class="item-price">Nu. 950</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>White Pie (Bianca)</h3>
+                            <p>A sauceless wonder with olive oil, creamy ricotta, fresh mozzarella, minced garlic, and spinach.</p>
+                        </div>
+                        <div class="item-price">Nu. 900</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Veggie Delight</h3>
+                            <p>Tomato sauce, mozzarella, bell peppers, red onions, mushrooms, black olives, and fresh tomatoes.</p>
+                        </div>
+                        <div class="item-price">Nu. 900</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Margherita Classica</h3>
+                            <p>Imported San Marzano tomato sauce, fresh mozzarella, fragrant basil, and a drizzle of EVOO.</p>
+                        </div>
+                        <div class="item-price">Nu. 800</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-category" id="slices">
+                <h2>By The Slice</h2>
+                <p class="category-note">Available from 11am-3pm & 5pm-9pm daily. Slice selection varies.</p>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Classic Cheese Slice</h3>
+                            <p>The iconic NY slice – foldable, cheesy, and simply perfect.</p>
+                        </div>
+                        <div class="item-price">Nu. 120</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Pepperoni Slice</h3>
+                            <p>Our famous Manhattan pepperoni pizza, served by the generous slice.</p>
+                        </div>
+                        <div class="item-price">Nu. 150</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Veggie Slice of the Day</h3>
+                            <p>Today's selection of our finest vegetarian toppings on a slice.</p>
+                        </div>
+                        <div class="item-price">Nu. 140</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Specialty Slice <span class="special-tag">Ask Us!</span></h3>
+                            <p>Feeling adventurous? Ask our staff about today's unique specialty slice!</p>
+                        </div>
+                        <div class="item-price">Nu. 180</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-category" id="specials">
+                <h2>Bhutanese Fusion Pies</h2>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Himalayan Momo Pizza <span class="special-tag">New</span></h3>
+                            <p>A unique fusion! Our NY crust topped with savory minced beef momo filling, mozzarella, and fresh scallions.</p>
+                        </div>
+                        <div class="item-price">Nu. 1000</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Ema Datshi Pizza (Spicy!)</h3>
+                            <p>Experience Bhutan's national dish on a pizza! Creamy Ema Datshi sauce base with local chilies and cheese.</p>
+                        </div>
+                        <div class="item-price">Nu. 950</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Bhutanese Honey Chili Chicken Pizza</h3>
+                            <p>Sweet and spicy! Tender chicken marinated in local honey and chili flakes, with bell peppers and mozzarella.</p>
+                        </div>
+                        <div class="item-price">Nu. 980</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-category" id="sides-apps">
+                <h2>Sides & Appetizers</h2>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Garlic Knots (6 pieces)</h3>
+                            <p>Our signature dough, twisted, baked golden, and tossed in garlic butter, parmesan, and herbs. Served with marinara.</p>
+                        </div>
+                        <div class="item-price">Nu. 200</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Cheesy Garlic Bread</h3>
+                            <p>Thick slices of bread topped with garlic butter, herbs, and melted mozzarella. Served with marinara.</p>
+                        </div>
+                        <div class="item-price">Nu. 250</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>NY Chopped Salad</h3>
+                            <p>Crisp lettuce, tomatoes, cucumbers, olives, red onion, and feta, all finely chopped with a light vinaigrette.</p>
+                        </div>
+                        <div class="item-price">Nu. 300</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Spicy Wings (6 pieces)</h3>
+                            <p>Crispy chicken wings tossed in your choice of: Classic Buffalo, Honey BBQ, or Bhutanese Fire Chili.</p>
+                        </div>
+                        <div class="item-price">Nu. 350</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-category" id="drinks">
+                <h2>Drinks</h2>
+                <div class="menu-items">
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Fountain Sodas</h3>
+                            <p>Coke, Sprite, Fanta, Diet Coke, Mountain Dew (free refills).</p>
+                        </div>
+                        <div class="item-price">Nu. 80</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Fresh Brewed Iced Tea</h3>
+                            <p>Sweetened or unsweetened, brewed daily.</p>
+                        </div>
+                        <div class="item-price">Nu. 100</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Local Craft Beer <span class="special-tag">Rotating</span></h3>
+                            <p>Selection of Bhutanese craft beers. Ask your server for today's options.</p>
+                        </div>
+                        <div class="item-price">Nu. 250</div>
+                    </div>
+                    <div class="menu-item">
+                        <div class="item-name">
+                            <h3>Bottled Mineral Water</h3>
+                            <p>500ml / 1L</p>
+                        </div>
+                        <div class="item-price">Nu. 50 / 80</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" aria-label="Close modal">&times;</button>
+            <div class="modal-img">
+                <img src="https://via.placeholder.com/400x300?text=Pizza+Image" alt="Pizza Image">
+            </div>
+            <div class="modal-text">
+                <h2 class="modal-title">Pizza Name</h2>
+                <div class="price">Nu. 0</div>
+                <p class="modal-description">Pizza description goes here. Detailed information about the ingredients, preparation, and why it's a customer favorite.</p>
+                <a href="contact.html#order-form" class="btn">Order This Pizza!</a> </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Karma's NY Pizza</h3>
+                    <p>Bringing authentic New York style pizza to the heart of Bhutan. Every slice a story.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="TripAdvisor"><i class="fab fa-tripadvisor"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="menu.html">Menu</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> Main Street, Phuntsholing, Bhutan</li>
+                        <li><i class="fas fa-phone-alt"></i> +975 17 123 456</li>
+                        <li><i class="fas fa-envelope"></i> info@karmasnypizza.bt</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Opening Hours</h3>
+                    <ul>
+                        <li>Mon - Fri: 11:00 AM - 10:00 PM</li>
+                        <li>Sat - Sun: 12:00 PM - 11:00 PM</li>
+                        <li><a href="contact.html#delivery" style="font-weight:bold; color:var(--yellow);">Delivery Available!</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Karma's NY Pizza. All Rights Reserved. Designed with <i class="fas fa-heart" style="color: var(--red);"></i> in Bhutan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Set Current Year in Footer ---
+        const currentYearSpan = document.getElementById('currentYear');
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
+        }
+
+        // --- Loading Animation ---
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingOverlay = document.querySelector('.loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.classList.add('fade-out');
+                    setTimeout(function() {
+                        loadingOverlay.style.display = 'none';
+                    }, 500); // Match CSS transition duration
+                }
+            }, 1500); // Simulate loading time
+        });
+
+        // --- Mobile Menu Toggle ---
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navUl = document.querySelector('nav ul');
+        
+        if (mobileMenuBtn && navUl) {
+            mobileMenuBtn.addEventListener('click', function() {
+                navUl.classList.toggle('active');
+                this.innerHTML = navUl.classList.contains('active') ? 
+                                 '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+        }
+
+        // --- Header Scroll Effect ---
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (header) {
+                if (window.scrollY > 50) { // Reduced scroll distance for effect
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // --- Scroll Animation for Menu Items ---
+        const scrollElements = document.querySelectorAll('.menu-item'); // Target .menu-item
+        
+        const elementInView = (el, threshold = 0.1) => { // threshold as percentage
+            const elementTop = el.getBoundingClientRect().top;
+            return (
+                elementTop <= (window.innerHeight || document.documentElement.clientHeight) * (1 - threshold)
+            );
+        };
+        
+        const displayScrollElement = (element) => {
+            element.classList.add('in-view');
+        };
+        
+        const handleScrollAnimation = () => {
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 0.1)) { // Trigger when 10% of element is visible from bottom
+                    displayScrollElement(el);
+                }
+            });
+        };
+        
+        // Initial check on page load for elements already in view
+        handleScrollAnimation();
+        window.addEventListener('scroll', handleScrollAnimation);
+        
+
+        // --- Modal Functionality ---
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const closeModalBtn = document.querySelector('.close-modal');
+        const modalImgElement = document.querySelector('.modal-img img');
+        const modalTitleElement = document.querySelector('.modal-text .modal-title'); // Corrected selector
+        const modalPriceElement = document.querySelector('.modal-text .price');      // Corrected selector
+        const modalDescElement = document.querySelector('.modal-text .modal-description'); // Corrected selector
+        
+        // Sample data for modal (In a real site, this could be fetched or be part of data attributes)
+        const pizzaData = {
+            'The Manhattan': {
+                img: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                price: 'Nu. 850',
+                desc: 'Our most popular pizza! Classic New York style with our signature tomato sauce, fresh mozzarella cheese, and premium pepperoni. The perfect balance of crispy crust, gooey cheese, and savory pepperoni that folds just right.'
+            },
+            'The Brooklyn Special': {
+                img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                price: 'Nu. 950',
+                desc: 'A Brooklyn favorite with tomato sauce, mozzarella, Italian sausage, fresh mushrooms, and caramelized onions. The combination of savory sausage with sweet onions is a match made in pizza heaven.'
+            },
+            'White Pie (Bianca)': {
+                img: 'https://images.unsplash.com/photo-1571066811602-716837d681DE?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                price: 'Nu. 900',
+                desc: 'A delightful sauceless pizza featuring a base of extra virgin olive oil, generous dollops of creamy ricotta, fresh mozzarella, minced garlic, and fresh spinach. A sophisticated choice for garlic lovers.'
+            },
+            'Veggie Delight': {
+                img: 'https://images.unsplash.com/photo-1593560704563-f176a2eb61db?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                price: 'Nu. 900',
+                desc: 'A garden on a crust! Loaded with tomato sauce, mozzarella, colorful bell peppers, sweet red onions, earthy mushrooms, briny black olives, and juicy fresh tomatoes.'
+            },
+            'Margherita Classica': {
+                img: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                price: 'Nu. 800',
+                desc: 'The Queen of Pizzas. Simplicity at its best with imported San Marzano tomato sauce, fresh mozzarella di bufala, fragrant basil leaves, and a drizzle of extra virgin olive oil.'
+            },
+             'Himalayan Momo Pizza': {
+                img: 'https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Replace with a unique image if possible
+                price: 'Nu. 1000',
+                desc: 'Our unique Bhutanese-NY fusion! Traditional momo filling (minced beef with Himalayan spices) on a pizza with tomato sauce, mozzarella, and scallions. A must-try for locals and visitors alike!'
+            },
+            'Ema Datshi Pizza (Spicy!)': {
+                img: 'https://plus.unsplash.com/premium_photo-1673580751275-94293a167772?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Replace
+                price: 'Nu. 950',
+                desc: "Experience Bhutan's national dish on a pizza! A creamy, spicy Ema Datshi (chilies and cheese) sauce base topped with local chili peppers and extra cheese. For the brave and bold!"
+            },
+            'Bhutanese Honey Chili Chicken Pizza': {
+                img: 'https://images.unsplash.com/photo-1600607687519-347506300078?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Replace
+                price: 'Nu. 980',
+                desc: "A delightful blend of sweet and spicy. Tender pieces of chicken marinated in local Bhutanese honey and chili flakes, accompanied by colorful bell peppers and mozzarella on our classic NY crust."
+            }
+            // Add more pizza data here for other items you want to make clickable for modal
+        };
+        
+        if (modalOverlay && closeModalBtn && modalImgElement && modalTitleElement && modalPriceElement && modalDescElement) {
+            document.querySelectorAll('.item-name h3').forEach(itemHeader => {
+                itemHeader.addEventListener('click', function() {
+                    const pizzaName = this.textContent.replace(/<span class="special-tag">.*?<\/span>/gi, '').trim(); // Remove tags and trim
+                    
+                    if (pizzaData[pizzaName]) {
+                        modalImgElement.src = pizzaData[pizzaName].img;
+                        modalImgElement.alt = pizzaName + " Pizza Image";
+                        modalTitleElement.textContent = pizzaName;
+                        modalPriceElement.textContent = pizzaData[pizzaName].price;
+                        modalDescElement.textContent = pizzaData[pizzaName].desc;
+                        modalOverlay.classList.add('active');
+                        document.body.style.overflow = 'hidden'; // Prevent background scroll
+                    } else {
+                        console.warn("No data found for pizza:", pizzaName);
+                        // Optionally show a default message or a simpler modal if data is missing
+                    }
+                });
+            });
+            
+            closeModalBtn.addEventListener('click', function() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restore background scroll
+            });
+            
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) { // Click on overlay itself, not content
+                    modalOverlay.classList.remove('active');
+                    document.body.style.overflow = 'auto'; // Restore background scroll
+                }
+            });
+        } else {
+            console.error("Modal elements not found. Check your selectors.");
+        }
+
+    </script>
+</body>
+</html>
